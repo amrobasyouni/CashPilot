@@ -14,12 +14,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProfileService {
 
-    private  final ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
+    private final EmailService emailService;
 
     public ProfileDTO registerProfile(ProfileDTO dto){
         ProfileEntity newProfile = toEntity(dto);
         newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile = profileRepository.save(newProfile);
+        String activationLink = "http://localhost:8080/api/v1.0/activate?token="+newProfile.getActivationToken();
+        String subject = "Activate your CashPilot Account";
+        String body = "Click to the link to activate your account: " + activationLink;
+        emailService.sendEmail(newProfile.getEmail(),subject,body);
         return toDto(newProfile);
     }
 
@@ -45,4 +50,15 @@ public class ProfileService {
                 .updatedAt(entity.getUpdatedAt())
                 .build();
     }
+
+    public boolean activateProfile(String activationToken){
+        return profileRepository.findByActivationToken(activationToken)
+                .map(profile ->{
+                    profile.setIsActive(true);
+                    profileRepository.save(profile);
+                    return true;
+                })
+                .orElse(false);
+                }
+
 }
