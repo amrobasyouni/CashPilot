@@ -5,7 +5,6 @@ import in.amrobasyouni.CashPilot.dto.ProfileDTO;
 import in.amrobasyouni.CashPilot.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,8 +51,4 @@ public class ProfileController {
 
     }
 
-    @GetMapping("/test")
-    public String test(){
-     return "Test Successful";
-    }
 }
