@@ -7,6 +7,9 @@ import in.amrobasyouni.CashPilot.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -25,6 +28,30 @@ public class CategoryService {
         newCategory = categoryRepository.save(newCategory);
         return toDto(newCategory);
 
+    }
+
+    public List<CategoryDTO> findCategoriesForCurrentUser(Long id){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        if (profile.getId()!=id){throw new RuntimeException("Access Denied");}
+        List<CategoryEntity> AllCategories = categoryRepository.findByProfileId(id);
+        return AllCategories.stream().map(this::toDto).toList();
+    }
+
+    public List<CategoryDTO> getCategoriesByType(String type){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<CategoryEntity> newList = categoryRepository.findByTypeAndProfileId(type,profile.getId());
+        return newList.stream().map(this::toDto).toList();
+    }
+
+    public CategoryDTO updateCategoriesById(Long categoryId ,CategoryDTO dto){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        CategoryEntity newCategory = categoryRepository.findByIdAndProfileId(categoryId,profile.getId());
+        newCategory.setName(dto.getName());
+        newCategory.setType(dto.getType());
+        newCategory.setIcon(dto.getIcon());
+
+        newCategory = categoryRepository.save(newCategory);
+        return toDto(newCategory);
     }
 
     private CategoryEntity toEntity(CategoryDTO categoryDTO, ProfileEntity profileEntity){
