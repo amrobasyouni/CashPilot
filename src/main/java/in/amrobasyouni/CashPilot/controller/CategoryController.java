@@ -22,9 +22,9 @@ public class CategoryController {
 
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<CategoryDTO>> findCategoriesByProfileId(@PathVariable Long id){
-        List<CategoryDTO> categories = categoryService.findCategoriesForCurrentUser(id);
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryDTO>> findCategoriesByProfileId(){
+        List<CategoryDTO> categories = categoryService.findCategoriesForCurrentUser();
         return ResponseEntity.ok(categories);
     }
 

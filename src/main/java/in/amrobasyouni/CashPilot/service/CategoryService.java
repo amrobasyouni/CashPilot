@@ -30,10 +30,9 @@ public class CategoryService {
 
     }
 
-    public List<CategoryDTO> findCategoriesForCurrentUser(Long id){
+    public List<CategoryDTO> findCategoriesForCurrentUser(){
         ProfileEntity profile = profileService.getCurrentProfile();
-        if (profile.getId()!=id){throw new RuntimeException("Access Denied");}
-        List<CategoryEntity> AllCategories = categoryRepository.findByProfileId(id);
+        List<CategoryEntity> AllCategories = categoryRepository.findByProfileId(profile.getId());
         return AllCategories.stream().map(this::toDto).toList();
     }
 
