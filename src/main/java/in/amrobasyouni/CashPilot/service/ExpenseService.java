@@ -7,9 +7,9 @@ import in.amrobasyouni.CashPilot.entity.ProfileEntity;
 import in.amrobasyouni.CashPilot.repository.CategoryRepository;
 import in.amrobasyouni.CashPilot.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class ExpenseService {
         ProfileEntity profile = profileService.getCurrentProfile();
         CategoryEntity category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(()->new RuntimeException("Category not found"));
-        if(profile.getId() != category.getProfile().getId()){
+        if(profile.getId().equals(category.getProfile().getId())){
             throw new RuntimeException("Category not found bcz of user");
         }
         ExpenseEntity newExpense = toEntity(dto,profile,category);
@@ -54,6 +54,20 @@ public class ExpenseService {
             expenseRepository.delete(expenseForDeletion);
         }else {throw new RuntimeException("Unauthorized Deletion");}
 
+    }
+
+    //get latest 5 expenses for current user
+    public List<ExpenseDTO> getLatest5ExpensesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<ExpenseEntity> topFive = expenseRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        return topFive.stream().map(this::toDTO).toList();
+    }
+
+    //get total expenses for current User
+    public BigDecimal totalExpenses(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        BigDecimal total = expenseRepository.findTotalExpenseByProfileId(profile.getId());
+        return total != null ? total: BigDecimal.ZERO;
     }
 
     private ExpenseEntity toEntity(ExpenseDTO expenseDTO, ProfileEntity profile, CategoryEntity category){

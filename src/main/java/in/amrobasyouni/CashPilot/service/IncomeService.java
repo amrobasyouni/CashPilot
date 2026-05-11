@@ -12,6 +12,7 @@ import in.amrobasyouni.CashPilot.repository.IncomeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -58,6 +59,20 @@ public class IncomeService {
             incomeRepository.delete(IncomeForDeletion);
         }else {throw new RuntimeException("Unauthorized Deletion");}
 
+    }
+
+    //get latest 5 incomes for current user
+    public List<IncomeDTO> getLatest5IncomesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<IncomeEntity> topFive = incomeRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        return topFive.stream().map(this::toDTO).toList();
+    }
+
+    //get total expenses for current User
+    public BigDecimal totalIncomes(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        BigDecimal total = incomeRepository.findTotalExpenseByProfileId(profile.getId());
+        return total != null ? total: BigDecimal.ZERO;
     }
 
     private IncomeEntity toEntity(IncomeDTO incomeDTO, ProfileEntity profile, CategoryEntity category){

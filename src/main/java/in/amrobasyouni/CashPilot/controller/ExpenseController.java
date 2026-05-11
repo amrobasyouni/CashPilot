@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -33,4 +34,15 @@ public class ExpenseController {
             expenseService.deleteExpense(expenseId);
             return ResponseEntity.ok("Expense Deleted");
         }
+
+       @GetMapping("/top")
+    public ResponseEntity<List<ExpenseDTO>>get5LatestExpenses(){
+            List<ExpenseDTO> latest = expenseService.getLatest5ExpensesForCurrentUser();
+            return ResponseEntity.ok(latest);
+
+           }
+    @GetMapping("/sum")
+    public ResponseEntity<BigDecimal> totalExpense(){
+          return  ResponseEntity.ok(expenseService.totalExpenses());
+       }
 }
