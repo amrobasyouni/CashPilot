@@ -10,6 +10,7 @@ import in.amrobasyouni.CashPilot.entity.ProfileEntity;
 import in.amrobasyouni.CashPilot.repository.CategoryRepository;
 import in.amrobasyouni.CashPilot.repository.IncomeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public class IncomeService {
         CategoryEntity category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(()->new RuntimeException("Category not found"));
 
-        if(profile.getId() != category.getProfile().getId()){
+        if(profile.getId().equals(category.getProfile().getId())){
             throw new RuntimeException("Category not found bcz of user");
         }
         IncomeEntity newIncome = toEntity(dto,profile,category);
@@ -71,8 +72,15 @@ public class IncomeService {
     //get total expenses for current User
     public BigDecimal totalIncomes(){
         ProfileEntity profile = profileService.getCurrentProfile();
-        BigDecimal total = incomeRepository.findTotalExpenseByProfileId(profile.getId());
+        BigDecimal total = incomeRepository.findTotalIncomeByProfileId(profile.getId());
         return total != null ? total: BigDecimal.ZERO;
+    }
+
+    //filter incomes
+    public List<IncomeDTO> filterIncomes(LocalDate startDate, LocalDate endDate, String keyword, Sort sort ){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<IncomeEntity> list = incomeRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(),startDate,endDate,keyword,sort);
+        return list.stream().map(this::toDTO).toList();
     }
 
     private IncomeEntity toEntity(IncomeDTO incomeDTO, ProfileEntity profile, CategoryEntity category){

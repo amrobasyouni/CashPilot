@@ -7,6 +7,8 @@ import in.amrobasyouni.CashPilot.entity.ProfileEntity;
 import in.amrobasyouni.CashPilot.repository.CategoryRepository;
 import in.amrobasyouni.CashPilot.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,7 +26,7 @@ public class ExpenseService {
         ProfileEntity profile = profileService.getCurrentProfile();
         CategoryEntity category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(()->new RuntimeException("Category not found"));
-        if(profile.getId().equals(category.getProfile().getId())){
+        if(!(profile.getId().equals(category.getProfile().getId()))){
             throw new RuntimeException("Category not found bcz of user");
         }
         ExpenseEntity newExpense = toEntity(dto,profile,category);
@@ -68,6 +70,19 @@ public class ExpenseService {
         ProfileEntity profile = profileService.getCurrentProfile();
         BigDecimal total = expenseRepository.findTotalExpenseByProfileId(profile.getId());
         return total != null ? total: BigDecimal.ZERO;
+    }
+
+    //filter expenses
+    public List<ExpenseDTO> filterExpenses(LocalDate startDate, LocalDate endDate, String keyword, Sort sort ){
+       ProfileEntity profile = profileService.getCurrentProfile();
+       List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(),startDate,endDate,keyword,sort);
+       return list.stream().map(this::toDTO).toList();
+    }
+
+    //Notifications
+    public List<ExpenseDTO> getExpensesForUserOnDate(Long profileId, LocalDate date){
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDate(profileId,date);
+        return list.stream().map(this::toDTO).toList();
     }
 
     private ExpenseEntity toEntity(ExpenseDTO expenseDTO, ProfileEntity profile, CategoryEntity category){

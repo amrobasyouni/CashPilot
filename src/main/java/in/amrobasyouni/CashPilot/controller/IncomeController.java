@@ -1,6 +1,5 @@
 package in.amrobasyouni.CashPilot.controller;
 
-import in.amrobasyouni.CashPilot.dto.ExpenseDTO;
 import in.amrobasyouni.CashPilot.dto.IncomeDTO;
 import in.amrobasyouni.CashPilot.service.IncomeService;
 import lombok.RequiredArgsConstructor;
