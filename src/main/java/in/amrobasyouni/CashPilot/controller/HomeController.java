@@ -1,14 +1,16 @@
 package in.amrobasyouni.CashPilot.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping({"/status", "/health"})
+@RequestMapping("/health")
 public class HomeController {
     @GetMapping
-        public String healthCheck(){
-            return "App is running";
+        public ResponseEntity<String> healthCheck(){
+
+        return ResponseEntity.ok("app is running");
         }
     }
