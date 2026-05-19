@@ -7,7 +7,6 @@ import in.amrobasyouni.CashPilot.entity.ProfileEntity;
 import in.amrobasyouni.CashPilot.repository.CategoryRepository;
 import in.amrobasyouni.CashPilot.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 

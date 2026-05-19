@@ -1,10 +1,9 @@
 package in.amrobasyouni.CashPilot.service;
 
 
-import in.amrobasyouni.CashPilot.dto.ExpenseDTO;
+
 import in.amrobasyouni.CashPilot.dto.IncomeDTO;
 import in.amrobasyouni.CashPilot.entity.CategoryEntity;
-import in.amrobasyouni.CashPilot.entity.ExpenseEntity;
 import in.amrobasyouni.CashPilot.entity.IncomeEntity;
 import in.amrobasyouni.CashPilot.entity.ProfileEntity;
 import in.amrobasyouni.CashPilot.repository.CategoryRepository;

@@ -1,7 +1,6 @@
 package in.amrobasyouni.CashPilot.service;
 
 import in.amrobasyouni.CashPilot.dto.ExpenseDTO;
-import in.amrobasyouni.CashPilot.entity.ExpenseEntity;
 import in.amrobasyouni.CashPilot.entity.ProfileEntity;
 import in.amrobasyouni.CashPilot.repository.ProfileRepository;
 import jakarta.transaction.Transactional;
@@ -12,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service

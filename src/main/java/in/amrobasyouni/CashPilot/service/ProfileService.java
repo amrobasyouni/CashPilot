@@ -7,6 +7,7 @@ import in.amrobasyouni.CashPilot.entity.ProfileEntity;
 import in.amrobasyouni.CashPilot.repository.ProfileRepository;
 import in.amrobasyouni.CashPilot.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,11 +32,14 @@ public class ProfileService {
     private final JwtUtil jwtUtil;
     private final AppUserDetailsService appUserDetailsService;
 
+    @Value("${app.activation.url}")
+    private String activationURL;
+
     public ProfileDTO registerProfile(ProfileDTO dto){
         ProfileEntity newProfile = toEntity(dto);
         newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile = profileRepository.save(newProfile);
-        String activationLink = "http://localhost:8080/api/v1.0/activate?token="+newProfile.getActivationToken();
+        String activationLink = activationURL+"/api/v1.0/activate?token="+newProfile.getActivationToken();
         String subject = "Activate your CashPilot Account";
         String body = "Click to the link to activate your account: " + activationLink;
         emailService.sendEmail(newProfile.getEmail(),subject,body);
