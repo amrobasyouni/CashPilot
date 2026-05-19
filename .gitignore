@@ -64,4 +64,5 @@ build/
 # Spring Boot specific
 application.properties
 application.yml
+application-prod.properties
 
